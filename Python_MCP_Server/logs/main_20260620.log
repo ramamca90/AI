@@ -1,0 +1,72 @@
+2026-06-20 12:12:25|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 12:16:10|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 12:16:30|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 12:16:50|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 12:19:56|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 12:20:31|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 12:23:13|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 12:23:39|INFO|main|get_employee|Fetching employee details for ID=1000
+2026-06-20 12:25:14|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 12:25:32|INFO|main|get_employee|Fetching employee details for ID=1000
+2026-06-20 12:27:56|INFO|main|_make_connection|Connected to Database
+2026-06-20 12:27:56|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 12:28:09|INFO|main|get_employee|Fetching employee details for ID=100
+2026-06-20 12:30:56|INFO|main|connection_close|Disconnected from database
+2026-06-20 12:31:03|INFO|main|_make_connection|Connected to Database
+2026-06-20 12:31:03|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 12:31:33|INFO|main|get_employee|Fetching employee details for ID=100
+2026-06-20 12:31:33|WARNING|main|get_employee|Employee 100 not found
+2026-06-20 12:32:37|INFO|main|get_employee|Fetching employee details for ID=10001
+2026-06-20 12:32:37|INFO|main|get_employee|Employee record: ('Georgi', 'Facello', 'M', datetime.date(1986, 6, 26))
+2026-06-20 12:32:51|INFO|main|get_salary_history|Fetching salary history for ID=10001
+2026-06-20 12:32:51|INFO|main|get_salary_history|Salary rows: [(88958, datetime.date(2002, 6, 22), datetime.date(9999, 1, 1)), (85097, datetime.date(2001, 6, 22), datetime.date(2002, 6, 22)), (85112, datetime.date(2000, 6, 22), datetime.date(2001, 6, 22)), (84917, datetime.date(1999, 6, 23), datetime.date(2000, 6, 22)), (81097, datetime.date(1998, 6, 23), datetime.date(1999, 6, 23)), (81025, datetime.date(1997, 6, 23), datetime.date(1998, 6, 23)), (80013, datetime.date(1996, 6, 23), datetime.date(1997, 6, 23)), (76884, datetime.date(1995, 6, 24), datetime.date(1996, 6, 23)), (75994, datetime.date(1994, 6, 24), datetime.date(1995, 6, 24)), (75286, datetime.date(1993, 6, 24), datetime.date(1994, 6, 24)), (74333, datetime.date(1992, 6, 24), datetime.date(1993, 6, 24)), (71046, datetime.date(1991, 6, 25), datetime.date(1992, 6, 24)), (66961, datetime.date(1990, 6, 25), datetime.date(1991, 6, 25)), (66596, datetime.date(1989, 6, 25), datetime.date(1990, 6, 25)), (66074, datetime.date(1988, 6, 25), datetime.date(1989, 6, 25)), (62102, datetime.date(1987, 6, 26), datetime.date(1988, 6, 25)), (60117, datetime.date(1986, 6, 26), datetime.date(1987, 6, 26))]
+2026-06-20 18:01:14|INFO|main|get_employee|Fetching employee details for ID=100001
+2026-06-20 18:01:14|INFO|main|get_employee|Employee record: ('Jasminko', 'Antonakopoulos', 'M', datetime.date(1994, 12, 25))
+2026-06-20 18:02:59|INFO|main|update_employee_name|Updating employee 100001 name to Amara Antonakopoulos
+2026-06-20 18:02:59|INFO|main|update_employee_name|Update committed for employee 100001
+2026-06-20 18:03:26|INFO|main|get_employee|Fetching employee details for ID=100001
+2026-06-20 18:03:26|INFO|main|get_employee|Employee record: ('Amara', 'Antonakopoulos', 'M', datetime.date(1994, 12, 25))
+2026-06-20 18:03:28|INFO|main|get_salary_history|Fetching salary history for ID=100001
+2026-06-20 18:03:28|INFO|main|get_salary_history|Salary rows: [(42707, datetime.date(2002, 7, 15), datetime.date(9999, 1, 1)), (41952, datetime.date(2001, 7, 15), datetime.date(2002, 7, 15)), (40651, datetime.date(2000, 7, 15), datetime.date(2001, 7, 15)), (40000, datetime.date(1999, 7, 17), datetime.date(2000, 7, 15))]
+2026-06-20 18:08:29|INFO|main|update_salary|Updating salary for employee 100001 to 65000
+2026-06-20 18:08:29|INFO|main|update_salary|Update committed for employee 100001
+2026-06-20 18:09:15|INFO|main|get_salary_history|Fetching salary history for ID=100001
+2026-06-20 18:09:15|INFO|main|get_salary_history|Salary rows: [(42707, datetime.date(2002, 7, 15), datetime.date(9999, 1, 1)), (41952, datetime.date(2001, 7, 15), datetime.date(2002, 7, 15)), (40651, datetime.date(2000, 7, 15), datetime.date(2001, 7, 15)), (40000, datetime.date(1999, 7, 17), datetime.date(2000, 7, 15))]
+2026-06-20 18:12:25|INFO|main|update_salary|Updating salary for employee 100001 to 65000
+2026-06-20 18:12:25|INFO|main|update_salary|Update committed for employee 100001
+2026-06-20 18:12:28|INFO|main|get_salary_history|Fetching salary history for ID=100001
+2026-06-20 18:12:28|INFO|main|get_salary_history|Salary rows: [(42707, datetime.date(2002, 7, 15), datetime.date(9999, 1, 1)), (41952, datetime.date(2001, 7, 15), datetime.date(2002, 7, 15)), (40651, datetime.date(2000, 7, 15), datetime.date(2001, 7, 15)), (40000, datetime.date(1999, 7, 17), datetime.date(2000, 7, 15))]
+2026-06-20 18:15:24|INFO|main|get_employee|Fetching employee details for ID=100005
+2026-06-20 18:15:24|INFO|main|get_employee|Employee record: ('Anneke', 'Foong', 'M', datetime.date(1988, 10, 22))
+2026-06-20 18:15:34|INFO|main|get_salary_history|Fetching salary history for ID=100005
+2026-06-20 18:15:34|INFO|main|get_salary_history|Salary rows: [(90506, datetime.date(2001, 8, 9), datetime.date(9999, 1, 1)), (88168, datetime.date(2000, 8, 9), datetime.date(2001, 8, 9)), (84889, datetime.date(1999, 8, 10), datetime.date(2000, 8, 9))]
+2026-06-20 18:16:48|INFO|main|update_salary|Updating salary for employee 100005 to 100500
+2026-06-20 18:16:48|INFO|main|update_salary|Update committed for employee 100005
+2026-06-20 18:16:52|INFO|main|get_salary_history|Fetching salary history for ID=100005
+2026-06-20 18:16:52|INFO|main|get_salary_history|Salary rows: [(90506, datetime.date(2001, 8, 9), datetime.date(9999, 1, 1)), (88168, datetime.date(2000, 8, 9), datetime.date(2001, 8, 9)), (84889, datetime.date(1999, 8, 10), datetime.date(2000, 8, 9))]
+2026-06-20 18:35:04|INFO|main|connection_close|Disconnected from database
+2026-06-20 18:35:49|INFO|main|_make_connection|Connected to Database
+2026-06-20 18:35:49|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 18:38:22|INFO|main|get_employee|Fetching employee details for ID=100001
+2026-06-20 18:38:22|INFO|main|get_employee|Employee record: ('Amara', 'Antonakopoulos', 'M', datetime.date(1994, 12, 25))
+2026-06-20 18:38:37|INFO|main|get_salary_history|Fetching salary history for ID=100001
+2026-06-20 18:38:37|INFO|main|get_salary_history|Salary rows: [(42707, datetime.date(2002, 7, 15), datetime.date(9999, 1, 1)), (41952, datetime.date(2001, 7, 15), datetime.date(2002, 7, 15)), (40651, datetime.date(2000, 7, 15), datetime.date(2001, 7, 15)), (40000, datetime.date(1999, 7, 17), datetime.date(2000, 7, 15))]
+2026-06-20 18:39:31|INFO|main|update_salary|Updating salary for employee 100001 to 55000
+2026-06-20 18:39:31|INFO|main|update_salary|Update committed for employee 100001
+2026-06-20 18:40:09|INFO|main|get_salary_history|Fetching salary history for ID=100001
+2026-06-20 18:40:09|INFO|main|get_salary_history|Salary rows: [(55000, datetime.date(2026, 6, 20), datetime.date(9999, 1, 1)), (42707, datetime.date(2002, 7, 15), datetime.date(2026, 6, 20)), (41952, datetime.date(2001, 7, 15), datetime.date(2002, 7, 15)), (40651, datetime.date(2000, 7, 15), datetime.date(2001, 7, 15)), (40000, datetime.date(1999, 7, 17), datetime.date(2000, 7, 15))]
+2026-06-20 18:41:10|INFO|main|update_employee_name|Updating employee 100001 name to Jasminko Antonakopoulos
+2026-06-20 18:41:10|INFO|main|update_employee_name|Update committed for employee 100001
+2026-06-20 18:51:58|INFO|main|connection_close|Disconnected from database
+2026-06-20 18:52:07|INFO|main|_make_connection|Connected to Database
+2026-06-20 18:52:07|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 18:52:39|INFO|main|get_titles|Fetching titles for employee 100001
+2026-06-20 18:52:47|INFO|main|get_employee|Fetching employee details for ID=100001
+2026-06-20 18:52:47|INFO|main|get_employee|Employee record: ('Jasminko', 'Antonakopoulos', 'M', datetime.date(1994, 12, 25))
+2026-06-20 18:54:26|INFO|main|connection_close|Disconnected from database
+2026-06-20 18:54:48|INFO|main|_make_connection|Connected to Database
+2026-06-20 18:54:48|INFO|main|<module>|Starting EmployeeManager MCP server...
+2026-06-20 18:55:28|INFO|main|get_titles|Fetching titles for employee 100001
+2026-06-20 18:56:36|INFO|main|update_title|Updating title for employee 100001 to Senior Engineer
+2026-06-20 18:56:36|INFO|main|update_title|Title update committed for employee 100001
+2026-06-20 18:57:14|INFO|main|get_titles|Fetching titles for employee 100001

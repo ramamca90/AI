@@ -1,0 +1,57 @@
+2026-06-19 21:48:59|INFO|test_log_db|main|This is a test log message.
+2026-06-19 21:51:55|INFO|test_log_db|main|This is a test log message.
+2026-06-19 21:54:41|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 21:55:32|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 21:59:46|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 21:59:46|CRITICAL|test_log_db|_make_connection|invalid connection option "database"
+
+Multiple connection attempts failed. All failures were:
+- host: 'localhost', port: None, hostaddr: '::1': invalid connection option "database"
+
+- host: 'localhost', port: None, hostaddr: '127.0.0.1': invalid connection option "database"
+
+2026-06-19 22:03:09|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:03:09|CRITICAL|test_log_db|_make_connection|invalid connection option "database"
+
+Multiple connection attempts failed. All failures were:
+- host: 'localhost', port: '0', hostaddr: '::1': invalid connection option "database"
+
+- host: 'localhost', port: '0', hostaddr: '127.0.0.1': invalid connection option "database"
+
+2026-06-19 22:06:43|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:06:43|CRITICAL|test_log_db|_make_connection|connection is bad: invalid port number: "0"
+Multiple connection attempts failed. All failures were:
+- host: 'localhost', port: 0, hostaddr: '::1': connection is bad: invalid port number: "0"
+- host: 'localhost', port: 0, hostaddr: '127.0.0.1': connection is bad: invalid port number: "0"
+2026-06-19 22:07:12|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:07:12|INFO|test_log_db|_make_connection|Connected to Database
+2026-06-19 22:12:22|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:12:22|INFO|test_log_db|_make_connection|Connected to Database
+2026-06-19 22:12:22|INFO|test_log_db|connection_close|Disconnected from database
+2026-06-19 22:13:45|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:13:45|INFO|test_log_db|_make_connection|Connected to Database
+2026-06-19 22:13:45|INFO|test_log_db|connection_close|Disconnected from database
+2026-06-19 22:15:32|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:15:32|INFO|test_log_db|_make_connection|Connected to Database
+2026-06-19 22:15:32|INFO|test_log_db|main|test_log_db.py completed..
+2026-06-19 22:15:32|INFO|test_log_db|connection_close|Disconnected from database
+2026-06-19 22:16:29|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:16:30|INFO|test_log_db|_make_connection|Connected to Database
+2026-06-19 22:16:30|INFO|test_log_db|main|test_log_db.py completed..
+2026-06-19 22:16:30|INFO|test_log_db|connection_close|Disconnected from database
+2026-06-19 22:17:10|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:17:10|INFO|test_log_db|_make_connection|Connected to Database
+2026-06-19 22:17:10|INFO|test_log_db|main|test_log_db.py completed..
+2026-06-19 22:17:11|INFO|test_log_db|connection_close|Disconnected from database
+2026-06-19 22:17:41|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:17:41|INFO|test_log_db|_make_connection|Connected to Database
+2026-06-19 22:17:41|INFO|test_log_db|main|test_log_db.py completed..
+2026-06-19 22:17:42|INFO|test_log_db|connection_close|Disconnected from database
+2026-06-19 22:17:53|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:17:54|INFO|test_log_db|_make_connection|Connected to Database
+2026-06-19 22:17:54|INFO|test_log_db|main|test_log_db.py completed..
+2026-06-19 22:18:06|INFO|test_log_db|connection_close|Disconnected from database
+2026-06-19 22:18:59|INFO|test_log_db|main|test_log_db.py started..
+2026-06-19 22:18:59|INFO|test_log_db|_make_connection|Connected to Database
+2026-06-19 22:18:59|INFO|test_log_db|main|test_log_db.py completed..
+2026-06-19 22:18:59|INFO|test_log_db|connection_close|Disconnected from database
