@@ -46,12 +46,12 @@ Code
 ## ⚙️ Setup
 
 1. **Install dependencies**
-   ```bash
+   bash command
    pip install MCP psycopg pytest
+   
 Configure database
 Update src/gen_ai_app.cfg with your PostgreSQL connection details:
 
-ini
 [gen_ai_app]
 log_path = E:\\__playground__\\python\\gen_ai_app\\logs
 
@@ -65,6 +65,7 @@ Run MCP server
 
 bash
 python src/main.py
+
 🔗 Claude Desktop Integration
 Configure Claude Desktop to run your MCP server directly from your local environment.
 Update your claude_desktop_config.json file with the following entry:
@@ -77,6 +78,7 @@ json
     "transport": "streamable-http"
   }
 }
+
 Notes
 command → Path to your Python interpreter (in your Anaconda environment).
 
