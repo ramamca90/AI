@@ -28,7 +28,7 @@ All operations are logged using a rotating file logger (`logger_helper.py`).
 ```
 src/
   employee_db.py          # PostgreSQL operations for employees schema
-  gen_ai_app.cfg          # Config file (DB connection + log path)
+  employee_manager.cfg    # Config file (DB connection + log path)
   logger_helper.py        # Logging helper
   main.py                 # MCP server setup + tool wrappers
   postgresql_db_helper.py # PostgreSQL connection/cursor helper
@@ -57,7 +57,7 @@ Update `src/gen_ai_app.cfg` with your PostgreSQL connection details:
 
 ```ini
 [gen_ai_app]
-log_path = E:\\__playground__\\python\\gen_ai_app\\logs
+log_path = E:\\__playground__\\AI\\mcp_server\\logs
 
 [postgresql]
 host = localhost
@@ -83,8 +83,8 @@ Update your `claude_desktop_config.json` file with the following entry:
 ```json
 "mcpServers": {
   "EmployeeManager": {
-    "command": "C:\\Users\\90ram\\anaconda3\\envs\\gen_ai_app\\python.exe",
-    "args": ["E:\\__playground__\\python\\gen_ai_app\\src\\main.py"],
+    "command": "C:\\Users\\90ram\\anaconda3\\envs\\mcp_server\\python.exe",
+    "args": ["E:\\__playground__\\AI\\mcp_server\\src\\main.py"],
     "transport": "streamable-http"
   }
 }
