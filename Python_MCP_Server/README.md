@@ -150,14 +150,14 @@ This log output is essential for debugging and monitoring the server's performan
 ---
 
 ### 5. Claude Desktop - Chatbot Interface with EmployeeManager Integration
-<img width="940" height="563" alt="Claude Desktop Chatbot Interface" src="https://github.com/ramamca90/AI/assets/image1.png" />
+<img width="940" height="567" alt="image" src="https://github.com/user-attachments/assets/2d1c2a8e-3569-45ad-bd43-6b1645f93cd6" />
 
 The main Claude Desktop chat interface showing how the EmployeeManager MCP server is integrated as a connector, providing various tools for employee data queries and management through an intuitive conversational interface. The interface displays the available tools and options for interacting with the MCP server.
 
 ---
 
 ### 6. Claude Desktop - Connectors and Tool Management
-<img width="940" height="420" alt="Claude Desktop Connectors Settings" src="https://github.com/ramamca90/AI/assets/image2.png" />
+<img width="940" height="394" alt="image" src="https://github.com/user-attachments/assets/0aadd986-1d58-4731-9061-8842cedf5bca" />
 
 The Connectors panel displaying the EmployeeManager integration with all available tools including:
 - `get_employee` - Retrieve employee details
@@ -172,14 +172,14 @@ Each tool shows its permissions and can be individually managed through this int
 ---
 
 ### 7. Claude Desktop - Tool Search and Execution
-<img width="940" height="480" alt="Tool Search Results" src="https://github.com/ramamca90/AI/assets/image3.png" />
+<img width="940" height="676" alt="image" src="https://github.com/user-attachments/assets/127197ea-7724-4c7f-a52e-7215b1bafa45" />
 
 The tool search and execution functionality showing the process of finding and loading available EmployeeManager tools. This demonstrates how Claude Desktop dynamically searches for relevant tools when a user requests employee data (e.g., "get me employee 100 data") and loads the appropriate tools before executing the query. The interface shows the query request, available tools, and the tool loading process.
 
 ---
 
 ### 8. Claude Desktop - Query Results and Data Display
-<img width="940" height="620" alt="Query Results with Employee Data" src="https://github.com/ramamca90/AI/assets/image4.png" />
+<img width="940" height="949" alt="image" src="https://github.com/user-attachments/assets/fa739a3b-674d-4330-8758-a1adce52d568" />
 
 The chat interface displaying successful query results:
 - **Employee Information**: Name, gender, and hire date for the requested employee (e.g., employee 10001: Georgi Facello)
