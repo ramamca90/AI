@@ -99,53 +99,42 @@ Update your `claude_desktop_config.json` file with the following entry:
 
 ## 📸 Screenshots & Usage Guide
 
-### 1. PostgreSQL Database Schema in pgAdmin 4
-<img width="940" height="689" alt="image" src="https://github.com/user-attachments/assets/d5e3b477-21e5-4834-bb76-a82af398f705" />
+### 1. Claude Desktop - Chatbot Interface with EmployeeManager Integration
+![Claude Desktop Chatbot Interface](https://github.com/ramamca90/AI/assets/screenshot1.png)
 
-The **employees** schema contains multiple tables for managing employee data:
-- **employee**: Stores employee information (ID, first name, last name, gender, hire date)
-- **salary**: Maintains salary records with date ranges (employee_id, amount, from_date, to_date)
-- **title**: Tracks job titles over time (employee_id, title, from_date, to_date)
-
-This screenshot shows a sample query retrieving employee details and title history for employee ID 100001.
+The main Claude Desktop chat interface showing how the EmployeeManager MCP server is integrated as a connector, providing various tools for employee data queries and management through an intuitive conversational interface.
 
 ---
 
-### 2. Claude Desktop MCP Configuration File
-<img width="940" height="583" alt="image" src="https://github.com/user-attachments/assets/049df802-3429-4a18-bff3-b36010d7bc0c" />
+### 2. Claude Desktop - Connectors and Tool Management
+![Claude Desktop Connectors Settings](https://github.com/ramamca90/AI/assets/screenshot2.png)
 
-The `claude_desktop_config.json` file contains the MCP server registration with:
-- **Command**: Path to your Python interpreter in your Anaconda environment
-- **Arguments**: Path to the `main.py` entry point
-- **Transport**: Set to `streamable-http` for Claude Desktop integration
+The Connectors panel displaying the EmployeeManager integration with all available tools including:
+- `get_employee` - Retrieve employee details
+- `get_employee_by_partial_name` - Search employees by name
+- `get_salary_history` - View salary records
+- `update_salary` - Update employee salary
+- `get_titles` - Retrieve title history
+- `update_title` - Update employee title
 
-This configuration allows Claude Desktop to automatically start and communicate with the EmployeeManager MCP server.
-
----
-
-### 3. Claude Desktop - Local MCP Servers Settings
-<img width="940" height="541" alt="image" src="https://github.com/user-attachments/assets/7f8758fa-9f7e-4e6c-94b6-3809bb95007c" />
-
-The **Local MCP servers** settings panel in Claude Desktop displays:
-- **EmployeeManager**: The registered MCP server (marked as "Running")
-- **Command**: Path to the Python executable and main.py script
-- **Arguments**: Configuration details for the MCP server startup
-- **View Logs**: Quick access to troubleshoot any server issues
-
-This panel confirms that the MCP server is properly registered and running.
+Each tool shows its permissions and can be individually managed.
 
 ---
 
-### 4. MCP Server Logs and Execution
-<img width="939" height="481" alt="image" src="https://github.com/user-attachments/assets/2a20aa45-3738-4e87-8966-f7fef8a70c15" />
+### 3. Claude Desktop - Tool Search and Execution
+![Tool Search Results](https://github.com/ramamca90/AI/assets/screenshot3.png)
 
-The console output displays real-time logs from the running MCP server, showing:
-- **Server startup**: Successful connection and initialization
-- **Processing requests**: Tool calls being processed by the MCP server
-- **Query execution**: SQL queries being executed with their parameters
-- **Response handling**: Results being returned to Claude Desktop
+The tool search functionality showing the process of finding and loading available EmployeeManager tools. This demonstrates how Claude Desktop dynamically searches for relevant tools when a user requests employee data (e.g., "get me employee 100 data") and loads the appropriate tools before executing the query.
 
-This log output is essential for debugging and monitoring the server's performance.
+---
+
+### 4. Claude Desktop - Query Results and Data Display
+![Query Results with Employee Data](https://github.com/ramamca90/AI/assets/screenshot4.png)
+
+The chat interface displaying successful query results:
+- **Employee Information**: Name, gender, and hire date for the requested employee (e.g., employee 10001: Georgi Facello)
+- **Salary History**: A table showing salary records over time with From/To dates and salary amounts
+- This demonstrates the complete workflow from query to result display within Claude Desktop
 
 ---
 
