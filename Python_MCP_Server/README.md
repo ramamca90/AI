@@ -97,10 +97,10 @@ Update your `claude_desktop_config.json` file with the following entry:
 
 ---
 
-## 📸 Screenshots
+## 📸 Screenshots & Usage Guide
 
 ### 1. PostgreSQL Database Schema in pgAdmin 4
-![pgAdmin 4 - Employee Database](https://github.com/ramamca90/AI/assets/database-schema.png)
+<img src="docs/images/1_pgadmin_database_schema.png" width="800" alt="pgAdmin 4 - Employee Database">
 
 The **employees** schema contains multiple tables for managing employee data:
 - **employee**: Stores employee information (ID, first name, last name, gender, hire date)
@@ -111,8 +111,8 @@ This screenshot shows a sample query retrieving employee details and title histo
 
 ---
 
-### 2. Claude Desktop MCP Configuration
-![Claude Desktop Config - MCP Server Setup](https://github.com/ramamca90/AI/assets/claude-config.png)
+### 2. Claude Desktop MCP Configuration File
+<img src="docs/images/2_claude_desktop_config.png" width="800" alt="Claude Desktop Config - MCP Server Setup">
 
 The `claude_desktop_config.json` file contains the MCP server registration with:
 - **Command**: Path to your Python interpreter in your Anaconda environment
@@ -124,7 +124,7 @@ This configuration allows Claude Desktop to automatically start and communicate 
 ---
 
 ### 3. Claude Desktop - Local MCP Servers Settings
-![Claude Desktop Settings - Local MCP Servers](https://github.com/ramamca90/AI/assets/claude-mcp-settings.png)
+<img src="docs/images/3_claude_settings_mcp.png" width="800" alt="Claude Desktop Settings - Local MCP Servers">
 
 The **Local MCP servers** settings panel in Claude Desktop displays:
 - **EmployeeManager**: The registered MCP server (marked as "Running")
@@ -137,7 +137,7 @@ This panel confirms that the MCP server is properly registered and running.
 ---
 
 ### 4. MCP Server Logs and Execution
-![MCP Server Output - Logs and Processing](https://github.com/ramamca90/AI/assets/mcp-server-logs.png)
+<img src="docs/images/4_mcp_server_logs.png" width="800" alt="MCP Server Output - Logs and Processing">
 
 The console output displays real-time logs from the running MCP server, showing:
 - **Server startup**: Successful connection and initialization
