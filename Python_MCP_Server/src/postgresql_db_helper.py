@@ -120,7 +120,7 @@ import psycopg
 
 sys.path.append('/data/cronscripts/support_tools/')
 
-DB_INI_FILE = "E:\\__playground__\\python\\gen_ai_app\\src\\gen_ai_app.cfg"
+DB_INI_FILE = "E:\\__playground__\\AI\\mcp_server\\src\\employee_manager.cfg"
 
 logger = None
 
