@@ -5,7 +5,7 @@ from configparser import ConfigParser
 from logger_helper import get_logger
 from postgresql_db_helper import PostgreSQLDatabaseHelper
 
-DB_INI_FILE = "E:\\__playground__\\python\\AI\\src\\employee_manager.cfg"
+DB_INI_FILE = "E:\\__playground__\\AI\\mcp_server\\src\\employee_manager.cfg"
 
 class EmployeeDB:
     """Encapsulates PostgreSQL operations for the employees schema with logging."""
