@@ -53,10 +53,10 @@ pip install MCP psycopg pytest
 
 ### 2. Configure database
 
-Update `src/gen_ai_app.cfg` with your PostgreSQL connection details:
+Update `src/employee_manager.cfg` with your PostgreSQL connection details:
 
 ```ini
-[gen_ai_app]
+[employee_manager]
 log_path = E:\\__playground__\\AI\\mcp_server\\logs
 
 [postgresql]
