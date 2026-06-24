@@ -84,8 +84,7 @@ Update your `claude_desktop_config.json` file with the following entry:
 "mcpServers": {
   "EmployeeManager": {
     "command": "C:\\Users\\90ram\\anaconda3\\envs\\mcp_server\\python.exe",
-    "args": ["E:\\__playground__\\AI\\mcp_server\\src\\main.py"],
-    "transport": "streamable-http"
+    "args": ["E:\\__playground__\\AI\\mcp_server\\src\\main.py"]
   }
 }
 ```
@@ -93,7 +92,6 @@ Update your `claude_desktop_config.json` file with the following entry:
 **Notes:**
 - `command` → Path to your Python interpreter (in your Anaconda environment)
 - `args` → Path to your MCP server entry point (`main.py`)
-- `transport` → Must be `"streamable-http"` for Claude Desktop MCP integration
 
 ---
 
