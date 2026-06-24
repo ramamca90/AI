@@ -26,23 +26,23 @@ class EmployeeDB:
         Read database and application configuration from the cfg file.
 
         Returns:
-            dict: Dictionary of configuration parameters under the 'gen_ai_app' section.
+            dict: Dictionary of configuration parameters under the 'employee_manager' section.
 
         Raises:
-            Exception: If the config file does not exist or the section 'gen_ai_app' is missing.
+            Exception: If the config file does not exist or the section 'employee_manager' is missing.
         """
         parser = ConfigParser()
         parser.read(DB_INI_FILE)
     
-        gen_ai_app_parameters = {}
-        if parser.has_section('gen_ai_app'):
-            params = parser.items('gen_ai_app')
+        employee_manager_parameters = {}
+        if parser.has_section('employee_manager'):
+            params = parser.items('employee_manager')
             for param in params:
-                gen_ai_app_parameters[param[0]] = param[1]
+                employee_manager_parameters[param[0]] = param[1]
         else:
-            raise Exception(f"{DB_INI_FILE} file not exists or Section 'gen_ai_app' not found")
+            raise Exception(f"{DB_INI_FILE} file not exists or Section 'employee_manager' not found")
         
-        return gen_ai_app_parameters
+        return employee_manager_parameters
 
     def create_logger(self):
         """
