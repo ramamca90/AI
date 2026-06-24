@@ -112,19 +112,18 @@ This screenshot shows a sample query retrieving employee details and title histo
 ---
 
 ### 2. Claude Desktop MCP Configuration File
-<img width="940" height="583" alt="Claude Desktop Config" src="https://github.com/user-attachments/assets/049df802-3429-4a18-bff3-b36010d7bc0c" />
+<img width="1162" height="987" alt="image" src="https://github.com/user-attachments/assets/17a26cec-b6ba-458b-b358-0977884cc3b0" />
 
 The `claude_desktop_config.json` file contains the MCP server registration with:
 - **Command**: Path to your Python interpreter in your Anaconda environment
 - **Arguments**: Path to the `main.py` entry point
-- **Transport**: Set to `streamable-http` for Claude Desktop integration
 
 This configuration allows Claude Desktop to automatically start and communicate with the EmployeeManager MCP server.
 
 ---
 
 ### 3. Claude Desktop - Local MCP Servers Settings
-<img width="940" height="541" alt="Claude Desktop MCP Servers" src="https://github.com/user-attachments/assets/7f8758fa-9f7e-4e6c-94b6-3809bb95007c" />
+<img width="1026" height="760" alt="image" src="https://github.com/user-attachments/assets/5c5413b6-0b79-4bc4-943d-db49b3fa9ebd" />
 
 The **Local MCP servers** settings panel in Claude Desktop displays:
 - **EmployeeManager**: The registered MCP server (marked as "Running")
