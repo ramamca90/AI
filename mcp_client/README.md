@@ -2,7 +2,7 @@
 
 This project demonstrates how to create a **custom MCP chat client** that connects to your MCP server (backed by a PostgreSQL employee database) and allows you to ask questions interactively.  
 
-It uses **[MCP-Use](https://github.com/mcp-use/mcp-use)** — the open source way to connect any LLM to MCP tools and build custom agents with tool access, without relying on closed-source or proprietary application clients.
+It uses **[MCP-Use](https://github.com/mcp-use/mcp-use)** — the open source way to connect any LLM to MCP tools and build custom agents with tool access, without relying on closed-source or proprietary solutions.
 
 ---
 
@@ -11,10 +11,13 @@ It uses **[MCP-Use](https://github.com/mcp-use/mcp-use)** — the open source wa
 ### 1. Install MCP-Use
 ```bash
 pip install mcp-use
-2. Install LangChain Providers
+```
+
+### 2. Install LangChain Providers
+
 MCP-Use works with various LLM providers through LangChain. Install the provider package for the LLM you want to use:
 
-bash
+```bash
 # For OpenAI
 pip install langchain-openai
 
@@ -23,22 +26,31 @@ pip install langchain-anthropic
 
 # For Groq
 pip install langchain_groq
-🔑 Environment Variables
-Add your API keys to a .env file in the project root:
+```
 
-env
+## 🔑 Environment Variables
+
+Add your API keys to a `.env` file in the project root:
+
+```env
 OPENAI_API_KEY=your_openai_key_here
 ANTHROPIC_API_KEY=your_anthropic_key_here
 GROQ_API_KEY=your_groq_key_here
-⚙️ MCP Server Configuration
+```
+
+## ⚙️ MCP Server Configuration
+
 You can configure your MCP servers using a JSON file. Example:
 
-python
+```python
 client = MCPClient.from_config_file(
     os.path.join("mcp_servers.json")
 )
-Example configuration file (mcp_servers.json):
-json
+```
+
+Example configuration file (`mcp_servers.json`):
+
+```json
 {
   "mcpServers": {
     "EmployeeManager": {
@@ -50,29 +62,39 @@ json
     }
   }
 }
+```
+
 This tells the MCP client how to launch and connect to your Postgres-backed MCP server.
 
-▶️ Running the Chat Client
+## ▶️ Running the Chat Client
+
 Run the interactive chat client:
 
-bash
+```bash
 python mcp_chat_client.py
-You’ll see:
+```
 
-Code
+You'll see:
+
+```
 ********** Interactive MCP Chat **********
 Type 'exit' or 'quit' to end the conversation
 Type 'clear' to clear the conversation history
 ******************************************
+```
+
 You can now type queries like:
 
+```
 hi
 
 get employee EMP1001
 
 show salary history EMP2002
+```
 
-<img width="1777" height="587" alt="image" src="https://github.com/user-attachments/assets/c778d870-c25e-4755-a6d1-05b9e6f6bbc8" />
-<img width="1627" height="665" alt="image" src="https://github.com/user-attachments/assets/76555338-9eb3-437e-bc7f-26cae310c138" />
+### Example Output
 
+![Example 1](https://github.com/user-attachments/assets/c778d870-c25e-4755-a6d1-05b9e6f6bbc8)
 
+![Example 2](https://github.com/user-attachments/assets/76555338-9eb3-437e-bc7f-26cae310c138)
