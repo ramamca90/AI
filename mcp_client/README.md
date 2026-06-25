@@ -1,4 +1,4 @@
-# MCP Chat Client with Postgres Integration
+# MCP Chat Client with Postgres MCP server Integration
 
 This project demonstrates how to create a **custom MCP chat client** that connects to your MCP server (backed by a PostgreSQL employee database) and allows you to ask questions interactively.  
 
