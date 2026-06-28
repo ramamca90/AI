@@ -187,6 +187,13 @@ This demonstrates the complete workflow from query to result display within Clau
 
 ---
 
+---
+### VS code - Chat Agent (github copilot) integration
+<img width="1610" height="1022" alt="image" src="https://github.com/user-attachments/assets/da147e48-891d-4bd4-9ff3-f2c68a747738" />
+
+The VS chat interface connected with local mcp server tools and provided results for queries 
+
+
 ## 📋 Logs
 
 If any exceptions occur while running the MCP server, Claude Desktop will log them in:
