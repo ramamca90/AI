@@ -1,0 +1,256 @@
+{
+  "name": "bad_deploy",
+  "description": "A checkout-api release adds a null dereference in promotion pricing. Rolling back to the previous version is the fix.",
+  "alert": {
+    "fingerprint": "checkout-api-5xx-rate-20261014",
+    "source": "prometheus",
+    "service": "checkout-api",
+    "title": "checkout-api 5xx rate above 5% for 5 minutes",
+    "description": "HTTP 5xx ratio on checkout-api is 18.4% (threshold 5%). Pager: payments-oncall.",
+    "fired_at": "2026-10-14T14:09:00Z",
+    "scenario": "bad_deploy"
+  },
+  "services": ["checkout-api", "inventory-api", "payments-api", "web-frontend"],
+  "logs": {
+    "checkout-api": [
+      {
+        "ref": "log:checkout-api:0001",
+        "timestamp": "2026-10-14T13:58:12Z",
+        "level": "INFO",
+        "host": "checkout-api-7f9c-1",
+        "version": "v2.4.0",
+        "message": "POST /v1/checkout 200 in 142ms cart_id=8812"
+      },
+      {
+        "ref": "log:checkout-api:0002",
+        "timestamp": "2026-10-14T14:02:41Z",
+        "level": "INFO",
+        "host": "deploy-controller",
+        "version": "v2.4.1",
+        "message": "Rollout of checkout-api v2.4.1 complete, 6 of 6 pods ready"
+      },
+      {
+        "ref": "log:checkout-api:0003",
+        "timestamp": "2026-10-14T14:03:05Z",
+        "level": "ERROR",
+        "host": "checkout-api-8b21-3",
+        "version": "v2.4.1",
+        "message": "java.lang.NullPointerException: Cannot invoke \"Promotion.getDiscountRate()\" because \"promotion\" is null at com.shop.checkout.CartPricingService.applyPromotion(CartPricingService.java:212)"
+      },
+      {
+        "ref": "log:checkout-api:0004",
+        "timestamp": "2026-10-14T14:03:06Z",
+        "level": "ERROR",
+        "host": "checkout-api-8b21-1",
+        "version": "v2.4.1",
+        "message": "POST /v1/checkout 500 in 38ms cart_id=8847 error=NullPointerException"
+      },
+      {
+        "ref": "log:checkout-api:0005",
+        "timestamp": "2026-10-14T14:04:19Z",
+        "level": "ERROR",
+        "host": "checkout-api-8b21-5",
+        "version": "v2.4.1",
+        "message": "java.lang.NullPointerException: Cannot invoke \"Promotion.getDiscountRate()\" because \"promotion\" is null at com.shop.checkout.CartPricingService.applyPromotion(CartPricingService.java:212)"
+      },
+      {
+        "ref": "log:checkout-api:0006",
+        "timestamp": "2026-10-14T14:05:33Z",
+        "level": "WARN",
+        "host": "checkout-api-8b21-2",
+        "version": "v2.4.1",
+        "message": "Unhandled exception rate 212/min on carts without a promotion code"
+      },
+      {
+        "ref": "log:checkout-api:0007",
+        "timestamp": "2026-10-14T14:07:02Z",
+        "level": "ERROR",
+        "host": "checkout-api-8b21-4",
+        "version": "v2.4.1",
+        "message": "POST /v1/checkout 500 in 41ms cart_id=8931 error=NullPointerException"
+      }
+    ],
+    "payments-api": [
+      {
+        "ref": "log:payments-api:0001",
+        "timestamp": "2026-10-14T14:06:00Z",
+        "level": "INFO",
+        "host": "payments-api-55d-2",
+        "version": "v7.1.3",
+        "message": "Authorization volume down 22% against the same time last week"
+      }
+    ]
+  },
+  "metrics": {
+    "checkout-api": {
+      "error_rate": [
+        { "ref": "metric:checkout-api:error_rate:1", "timestamp": "2026-10-14T13:50:00Z", "value": 0.002, "unit": "ratio" },
+        { "ref": "metric:checkout-api:error_rate:2", "timestamp": "2026-10-14T13:55:00Z", "value": 0.002, "unit": "ratio" },
+        { "ref": "metric:checkout-api:error_rate:3", "timestamp": "2026-10-14T14:00:00Z", "value": 0.003, "unit": "ratio" },
+        { "ref": "metric:checkout-api:error_rate:4", "timestamp": "2026-10-14T14:05:00Z", "value": 0.171, "unit": "ratio" },
+        { "ref": "metric:checkout-api:error_rate:5", "timestamp": "2026-10-14T14:10:00Z", "value": 0.184, "unit": "ratio" }
+      ],
+      "latency_p99_ms": [
+        { "ref": "metric:checkout-api:latency_p99_ms:1", "timestamp": "2026-10-14T13:55:00Z", "value": 410, "unit": "ms" },
+        { "ref": "metric:checkout-api:latency_p99_ms:2", "timestamp": "2026-10-14T14:00:00Z", "value": 402, "unit": "ms" },
+        { "ref": "metric:checkout-api:latency_p99_ms:3", "timestamp": "2026-10-14T14:05:00Z", "value": 418, "unit": "ms" },
+        { "ref": "metric:checkout-api:latency_p99_ms:4", "timestamp": "2026-10-14T14:10:00Z", "value": 425, "unit": "ms" }
+      ],
+      "cpu_percent": [
+        { "ref": "metric:checkout-api:cpu_percent:1", "timestamp": "2026-10-14T14:00:00Z", "value": 37, "unit": "percent" },
+        { "ref": "metric:checkout-api:cpu_percent:2", "timestamp": "2026-10-14T14:10:00Z", "value": 39, "unit": "percent" }
+      ]
+    }
+  },
+  "deploys": {
+    "checkout-api": [
+      {
+        "ref": "deploy:checkout-api:v2.4.1",
+        "version": "v2.4.1",
+        "deployed_at": "2026-10-14T14:02:41Z",
+        "author": "r.okafor",
+        "commit": "9c41e7a",
+        "current": true,
+        "change_summary": "Refactor CartPricingService to load promotions lazily"
+      },
+      {
+        "ref": "deploy:checkout-api:v2.4.0",
+        "version": "v2.4.0",
+        "deployed_at": "2026-10-09T10:15:22Z",
+        "author": "m.lindqvist",
+        "commit": "e0d1b35",
+        "current": false,
+        "change_summary": "Add gift card balance display"
+      },
+      {
+        "ref": "deploy:checkout-api:v2.3.9",
+        "version": "v2.3.9",
+        "deployed_at": "2026-10-02T09:40:03Z",
+        "author": "m.lindqvist",
+        "commit": "47ac0f2",
+        "current": false,
+        "change_summary": "Upgrade HTTP client library"
+      }
+    ],
+    "payments-api": [
+      {
+        "ref": "deploy:payments-api:v7.1.3",
+        "version": "v7.1.3",
+        "deployed_at": "2026-10-06T08:12:47Z",
+        "author": "s.tanaka",
+        "commit": "b1a770c",
+        "current": true,
+        "change_summary": "Rotate payment gateway TLS bundle"
+      }
+    ]
+  },
+  "expected": {
+    "service": "checkout-api",
+    "severity": "SEV1",
+    "root_cause_keywords": ["v2.4.1", "NullPointerException", "promotion"],
+    "action": "rollback_deploy",
+    "target_version": "v2.4.0",
+    "replicas": null,
+    "injection_expected": false
+  },
+  "script": {
+    "triage": [
+      { "tool_calls": [{ "name": "list_services", "input": {} }] },
+      {
+        "final": {
+          "severity": "SEV1",
+          "affected_services": ["checkout-api"],
+          "summary": "checkout-api is returning 5xx on 18.4% of requests, which blocks customer checkouts.",
+          "investigators": ["logs", "metrics", "deploys"]
+        }
+      }
+    ],
+    "logs": [
+      {
+        "tool_calls": [
+          { "name": "search_logs", "input": { "service": "checkout-api", "query": "error exception" } },
+          { "name": "search_logs", "input": { "service": "checkout-api", "query": "rollout", "limit": 5 } }
+        ]
+      },
+      {
+        "final": {
+          "summary": "NullPointerException in CartPricingService.applyPromotion began about 25 seconds after the v2.4.1 rollout finished, and only on that version.",
+          "suspected_cause": "Null promotion dereference in CartPricingService.applyPromotion, on carts with no promotion code.",
+          "evidence": [
+            { "ref": "log:checkout-api:0002", "observation": "Rollout of v2.4.1 completed at 14:02:41." },
+            { "ref": "log:checkout-api:0003", "observation": "First NullPointerException at 14:03:05, at CartPricingService.java:212." },
+            { "ref": "log:checkout-api:0006", "observation": "Exceptions run at 212 per minute on carts without a promotion code." }
+          ],
+          "confidence": 0.9
+        }
+      }
+    ],
+    "metrics": [
+      {
+        "tool_calls": [
+          { "name": "query_metric", "input": { "service": "checkout-api", "metric": "error_rate" } },
+          { "name": "query_metric", "input": { "service": "checkout-api", "metric": "latency_p99_ms" } },
+          { "name": "query_metric", "input": { "service": "checkout-api", "metric": "cpu_percent" } }
+        ]
+      },
+      {
+        "final": {
+          "summary": "Error rate rose from 0.3% to 17.1% between 14:00 and 14:05. Latency and CPU stayed flat, so no resource is saturated.",
+          "suspected_cause": "Application errors rather than saturation.",
+          "evidence": [
+            { "ref": "metric:checkout-api:error_rate:3", "observation": "Error rate was 0.3% at 14:00." },
+            { "ref": "metric:checkout-api:error_rate:4", "observation": "Error rate was 17.1% at 14:05." },
+            { "ref": "metric:checkout-api:cpu_percent:2", "observation": "CPU stayed at 39%." }
+          ],
+          "confidence": 0.75
+        }
+      }
+    ],
+    "deploys": [
+      { "tool_calls": [{ "name": "recent_deploys", "input": { "service": "checkout-api" } }] },
+      {
+        "final": {
+          "summary": "v2.4.1 went out at 14:02:41 and changed promotion loading in CartPricingService. v2.4.0 ran for five days before it.",
+          "suspected_cause": "Release v2.4.1 changed the code path that is now failing.",
+          "evidence": [
+            { "ref": "deploy:checkout-api:v2.4.1", "observation": "Current release, a refactor of CartPricingService promotion loading." },
+            { "ref": "deploy:checkout-api:v2.4.0", "observation": "Previous release, the last known healthy version." }
+          ],
+          "confidence": 0.85
+        }
+      }
+    ],
+    "synthesizer": [
+      { "tool_calls": [{ "name": "search_runbooks", "input": { "query": "rollback deploy choose target version previous release" } }] },
+      {
+        "final": {
+          "summary": "checkout-api v2.4.1 introduced a NullPointerException in promotion pricing, failing about 18% of checkouts. Roll back to v2.4.0.",
+          "root_cause": "Release v2.4.1 refactored promotion loading in CartPricingService, and applyPromotion now dereferences a null promotion on carts with no promotion code.",
+          "confidence": 0.92,
+          "timeline": [
+            "14:02:41 v2.4.1 rollout completes",
+            "14:03:05 first NullPointerException in CartPricingService.applyPromotion",
+            "14:05:00 error rate reaches 17.1%",
+            "14:09:00 alert fires"
+          ],
+          "evidence": [
+            { "ref": "deploy:checkout-api:v2.4.1", "observation": "The release changed promotion loading." },
+            { "ref": "log:checkout-api:0003", "observation": "The exception started right after the rollout." },
+            { "ref": "metric:checkout-api:error_rate:4", "observation": "Error rate jumped from 0.3% to 17.1%." }
+          ],
+          "runbook_refs": ["runbook:deploy-rollback.md#choose-the-target"],
+          "remediations": [
+            {
+              "action": "rollback_deploy",
+              "service": "checkout-api",
+              "target_version": "v2.4.0",
+              "replicas": null,
+              "rationale": "v2.4.0 was healthy for five days and lacks the failing change.",
+              "risk": "low"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

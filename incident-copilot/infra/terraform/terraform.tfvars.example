@@ -1,0 +1,33 @@
+# Copy to terraform.tfvars. That file is gitignored, but never put a secret value in it anyway:
+# API keys go through scripts/set-secrets.sh.
+
+# Required: the one repository allowed to deploy, as owner/name.
+github_repo = "your-github-user/incident-copilot"
+
+aws_region   = "us-east-1"
+project_name = "incident-copilot"
+environment  = "demo"
+
+# scripted needs no Anthropic key. Use anthropic for live agents.
+llm_provider = "scripted"
+llm_model    = "claude-opus-5-5"
+
+# Alerts and spending. AWS emails a confirmation link to this address.
+alarm_email        = ""
+monthly_budget_usd = 100
+
+# Narrow this to your own IP (x.x.x.x/32) for a private demo.
+allowed_ingress_cidrs = ["0.0.0.0/0"]
+
+# Without a certificate the API runs on plain HTTP and the X-API-Key header is readable in
+# transit. With one, HTTP redirects to HTTPS. Create a DNS record for public_hostname yourself.
+# acm_certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/CHANGE-ME"
+# public_hostname     = "copilot.example.com"
+
+# Demo-friendly defaults: `terraform destroy` finishes cleanly and the data is gone. For anything
+# you need to keep, flip both.
+deletion_protection = false
+skip_final_snapshot = true
+
+# Set this to false if the account already has a GitHub OIDC provider.
+# create_github_oidc_provider = false

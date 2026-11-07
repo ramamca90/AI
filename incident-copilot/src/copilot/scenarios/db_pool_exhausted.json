@@ -1,0 +1,212 @@
+{
+  "name": "db_pool_exhausted",
+  "description": "A flash sale triples orders-api traffic and exhausts its connection pools while the database has headroom. Scaling out is the fix; no deploy is involved.",
+  "alert": {
+    "fingerprint": "orders-api-latency-20261021",
+    "source": "prometheus",
+    "service": "orders-api",
+    "title": "orders-api p99 latency above 5s",
+    "description": "p99 latency on orders-api is 30.1s (threshold 5s) and timeouts are rising.",
+    "fired_at": "2026-10-21T18:12:00Z",
+    "scenario": "db_pool_exhausted"
+  },
+  "services": ["orders-api", "orders-db", "search-api", "web-frontend"],
+  "logs": {
+    "orders-api": [
+      {
+        "ref": "log:orders-api:0001",
+        "timestamp": "2026-10-21T17:58:30Z",
+        "level": "INFO",
+        "host": "orders-api-6d4f-2",
+        "message": "HikariPool-1 stats (total=20, active=11, idle=9, waiting=0)"
+      },
+      {
+        "ref": "log:orders-api:0002",
+        "timestamp": "2026-10-21T18:04:48Z",
+        "level": "WARN",
+        "host": "orders-api-6d4f-1",
+        "message": "HikariPool-1 stats (total=20, active=20, idle=0, waiting=37)"
+      },
+      {
+        "ref": "log:orders-api:0003",
+        "timestamp": "2026-10-21T18:06:15Z",
+        "level": "ERROR",
+        "host": "orders-api-6d4f-4",
+        "message": "java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30000ms"
+      },
+      {
+        "ref": "log:orders-api:0004",
+        "timestamp": "2026-10-21T18:07:02Z",
+        "level": "ERROR",
+        "host": "orders-api-6d4f-3",
+        "message": "POST /v1/orders 503 in 30012ms error=SQLTransientConnectionException"
+      },
+      {
+        "ref": "log:orders-api:0005",
+        "timestamp": "2026-10-21T18:09:41Z",
+        "level": "ERROR",
+        "host": "orders-api-6d4f-6",
+        "message": "java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30000ms"
+      }
+    ],
+    "orders-db": [
+      {
+        "ref": "log:orders-db:0001",
+        "timestamp": "2026-10-21T18:08:00Z",
+        "level": "INFO",
+        "host": "orders-db-primary",
+        "message": "connections: 121 of 400 in use, no slow queries over 500ms in the last 5 minutes"
+      }
+    ]
+  },
+  "metrics": {
+    "orders-api": {
+      "requests_per_second": [
+        { "ref": "metric:orders-api:requests_per_second:1", "timestamp": "2026-10-21T17:50:00Z", "value": 310, "unit": "rps" },
+        { "ref": "metric:orders-api:requests_per_second:2", "timestamp": "2026-10-21T18:00:00Z", "value": 505, "unit": "rps" },
+        { "ref": "metric:orders-api:requests_per_second:3", "timestamp": "2026-10-21T18:05:00Z", "value": 940, "unit": "rps" },
+        { "ref": "metric:orders-api:requests_per_second:4", "timestamp": "2026-10-21T18:10:00Z", "value": 985, "unit": "rps" }
+      ],
+      "db_pool_in_use": [
+        { "ref": "metric:orders-api:db_pool_in_use:1", "timestamp": "2026-10-21T17:50:00Z", "value": 10, "unit": "connections_per_pod" },
+        { "ref": "metric:orders-api:db_pool_in_use:2", "timestamp": "2026-10-21T18:00:00Z", "value": 14, "unit": "connections_per_pod" },
+        { "ref": "metric:orders-api:db_pool_in_use:3", "timestamp": "2026-10-21T18:05:00Z", "value": 20, "unit": "connections_per_pod" },
+        { "ref": "metric:orders-api:db_pool_in_use:4", "timestamp": "2026-10-21T18:10:00Z", "value": 20, "unit": "connections_per_pod" }
+      ],
+      "db_pool_pending": [
+        { "ref": "metric:orders-api:db_pool_pending:1", "timestamp": "2026-10-21T18:00:00Z", "value": 0, "unit": "threads" },
+        { "ref": "metric:orders-api:db_pool_pending:2", "timestamp": "2026-10-21T18:05:00Z", "value": 37, "unit": "threads" },
+        { "ref": "metric:orders-api:db_pool_pending:3", "timestamp": "2026-10-21T18:10:00Z", "value": 112, "unit": "threads" }
+      ],
+      "latency_p99_ms": [
+        { "ref": "metric:orders-api:latency_p99_ms:1", "timestamp": "2026-10-21T18:00:00Z", "value": 610, "unit": "ms" },
+        { "ref": "metric:orders-api:latency_p99_ms:2", "timestamp": "2026-10-21T18:10:00Z", "value": 30100, "unit": "ms" }
+      ]
+    },
+    "orders-db": {
+      "cpu_percent": [
+        { "ref": "metric:orders-db:cpu_percent:1", "timestamp": "2026-10-21T18:00:00Z", "value": 31, "unit": "percent" },
+        { "ref": "metric:orders-db:cpu_percent:2", "timestamp": "2026-10-21T18:10:00Z", "value": 44, "unit": "percent" }
+      ]
+    }
+  },
+  "deploys": {
+    "orders-api": [
+      {
+        "ref": "deploy:orders-api:v5.12.0",
+        "version": "v5.12.0",
+        "deployed_at": "2026-10-16T11:03:29Z",
+        "author": "a.nguyen",
+        "commit": "3fe92d1",
+        "current": true,
+        "change_summary": "Add order note field to the API response"
+      },
+      {
+        "ref": "deploy:orders-api:v5.11.4",
+        "version": "v5.11.4",
+        "deployed_at": "2026-10-08T15:44:10Z",
+        "author": "a.nguyen",
+        "commit": "aa07c6e",
+        "current": false,
+        "change_summary": "Fix pagination on order history"
+      }
+    ]
+  },
+  "expected": {
+    "service": "orders-api",
+    "severity": "SEV2",
+    "root_cause_keywords": ["connection pool", "traffic", "HikariPool"],
+    "action": "scale_service",
+    "target_version": null,
+    "replicas": 10,
+    "injection_expected": false
+  },
+  "script": {
+    "triage": [
+      { "tool_calls": [{ "name": "list_services", "input": {} }] },
+      {
+        "final": {
+          "severity": "SEV2",
+          "affected_services": ["orders-api"],
+          "summary": "orders-api p99 latency is about 30s with timeouts rising, so order placement is degraded.",
+          "investigators": ["metrics", "logs"]
+        }
+      }
+    ],
+    "logs": [
+      {
+        "tool_calls": [
+          { "name": "search_logs", "input": { "service": "orders-api", "query": "HikariPool timeout" } },
+          { "name": "search_logs", "input": { "service": "orders-db", "query": "" } }
+        ]
+      },
+      {
+        "final": {
+          "summary": "HikariCP pools on orders-api are full with requests waiting 30s for a connection. The database itself reports 121 of 400 connections in use and no slow queries.",
+          "suspected_cause": "Application connection pools are exhausted while the database has spare capacity.",
+          "evidence": [
+            { "ref": "log:orders-api:0002", "observation": "Pool shows 20 of 20 active with 37 waiting at 18:04:48." },
+            { "ref": "log:orders-api:0003", "observation": "Requests time out after 30000ms waiting for a connection." },
+            { "ref": "log:orders-db:0001", "observation": "The database uses 121 of 400 connections and has no slow queries." }
+          ],
+          "confidence": 0.85
+        }
+      }
+    ],
+    "metrics": [
+      {
+        "tool_calls": [
+          { "name": "query_metric", "input": { "service": "orders-api", "metric": "requests_per_second" } },
+          { "name": "query_metric", "input": { "service": "orders-api", "metric": "db_pool_in_use" } },
+          { "name": "query_metric", "input": { "service": "orders-api", "metric": "db_pool_pending" } },
+          { "name": "query_metric", "input": { "service": "orders-db", "metric": "cpu_percent" } }
+        ]
+      },
+      {
+        "final": {
+          "summary": "Traffic tripled from 310 to 985 rps. In-use connections rose in step and hit the pool limit of 20 per pod at 18:05. Database CPU is only 44%.",
+          "suspected_cause": "Traffic surge saturating per-pod connection pools.",
+          "evidence": [
+            { "ref": "metric:orders-api:requests_per_second:1", "observation": "Baseline traffic was 310 rps." },
+            { "ref": "metric:orders-api:requests_per_second:4", "observation": "Traffic reached 985 rps." },
+            { "ref": "metric:orders-api:db_pool_in_use:3", "observation": "Pool reached its limit of 20 at 18:05." },
+            { "ref": "metric:orders-db:cpu_percent:2", "observation": "Database CPU was 44%, which leaves headroom." }
+          ],
+          "confidence": 0.85
+        }
+      }
+    ],
+    "synthesizer": [
+      { "tool_calls": [{ "name": "search_runbooks", "input": { "query": "database connection pool exhaustion capacity scale" } }] },
+      {
+        "final": {
+          "summary": "A traffic surge exhausted the orders-api connection pools while the database stayed healthy. Scale out orders-api. Deploy history was not investigated, because triage did not select it.",
+          "root_cause": "Traffic tripled to 985 rps and saturated the HikariPool connection pool of 20 per pod, so requests wait 30s for a connection. The database is not the bottleneck.",
+          "confidence": 0.86,
+          "timeline": [
+            "17:50 traffic at 310 rps",
+            "18:05 traffic reaches 940 rps and pools hit 20 of 20",
+            "18:06 first connection timeouts",
+            "18:12 alert fires"
+          ],
+          "evidence": [
+            { "ref": "metric:orders-api:requests_per_second:4", "observation": "Traffic is about three times the baseline." },
+            { "ref": "log:orders-api:0003", "observation": "Requests time out waiting for a connection." },
+            { "ref": "log:orders-db:0001", "observation": "Only 121 of 400 database connections are in use." }
+          ],
+          "runbook_refs": ["runbook:db-connection-pool-exhaustion.md#mitigate-capacity-pressure"],
+          "remediations": [
+            {
+              "action": "scale_service",
+              "service": "orders-api",
+              "target_version": null,
+              "replicas": 10,
+              "rationale": "Ten replicas with 20 connections each is 200 connections, under 80% of the 400 limit.",
+              "risk": "medium"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

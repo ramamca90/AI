@@ -1,0 +1,85 @@
+# Local stack. `docker compose up --build` needs no keys: LLM_PROVIDER defaults to scripted.
+# For live agents: LLM_PROVIDER=anthropic ANTHROPIC_API_KEY=... docker compose up
+# Credentials here are local-only throwaway values.
+name: incident-copilot
+
+x-app: &app
+  build: .
+  image: incident-copilot:local
+  environment:
+    LLM_PROVIDER: ${LLM_PROVIDER:-scripted}
+    ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    LLM_MODEL: ${LLM_MODEL:-claude-opus-5-5}
+    DATABASE_URL: postgresql+asyncpg://copilot:copilot@postgres:5432/copilot
+    QUEUE_BACKEND: sqs
+    SQS_QUEUE_URL: http://elasticmq:9324/queue/incident-jobs
+    AWS_REGION: us-east-1
+    # boto3 reads this endpoint override itself; the dummy keys satisfy request signing.
+    AWS_ENDPOINT_URL_SQS: http://elasticmq:9324
+    AWS_ACCESS_KEY_ID: local
+    AWS_SECRET_ACCESS_KEY: local
+    API_KEY: ${API_KEY:-dev-only-change-me}
+    LOG_LEVEL: ${LOG_LEVEL:-INFO}
+
+services:
+  postgres:
+    image: postgres:16.15-alpine
+    environment:
+      POSTGRES_USER: copilot
+      POSTGRES_PASSWORD: copilot
+      POSTGRES_DB: copilot
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U copilot -d copilot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  elasticmq:
+    image: softwaremill/elasticmq-native:1.7.1
+    volumes:
+      - ./infra/local/elasticmq.conf:/opt/elasticmq.conf:ro
+    ports:
+      - "9324:9324" # SQS API, for inspecting queues from the host
+
+  migrate:
+    <<: *app
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    <<: *app
+    command: ["copilot-api"]
+    ports:
+      - "8000:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      elasticmq:
+        condition: service_started
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request as u; u.urlopen('http://127.0.0.1:8000/healthz', timeout=2)"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+
+  worker:
+    <<: *app
+    command: ["copilot-worker"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      elasticmq:
+        condition: service_started
+
+volumes:
+  postgres-data:

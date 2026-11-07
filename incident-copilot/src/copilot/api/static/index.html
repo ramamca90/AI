@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Incident Copilot</title>
+<style>
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --sunken: #eef0f3;
+  --line: #d9dde3;
+  --text: #15191f;
+  --muted: #5a6472;
+  --accent: #1f5fbf;
+  --accent-text: #ffffff;
+  --good: #1a7a43;
+  --warn: #9a6200;
+  --bad: #b3261e;
+  --info: #1f5fbf;
+  --mono: ui-monospace, "Cascadia Code", Consolas, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #11141a;
+    --surface: #1a1e26;
+    --sunken: #232833;
+    --line: #333a47;
+    --text: #e8ebf0;
+    --muted: #9aa5b4;
+    --accent: #6ea5f7;
+    --accent-text: #0d1218;
+    --good: #5cc98a;
+    --warn: #e5b45a;
+    --bad: #f0877f;
+    --info: #6ea5f7;
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow-wrap: anywhere;
+}
+h1, h2, h3, p, ol, ul { margin: 0; }
+h1 { font-size: 17px; font-weight: 650; }
+h2 { font-size: 13px; font-weight: 650; color: var(--muted); letter-spacing: .02em; }
+h3 { font-size: 16px; font-weight: 650; }
+ol, ul { padding: 0; list-style: none; }
+code, .mono { font-family: var(--mono); font-size: 13px; }
+
+header.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.identity { display: flex; flex-wrap: wrap; gap: 12px; }
+label { display: grid; gap: 2px; font-size: 12px; color: var(--muted); }
+input, select, button { font: inherit; color: var(--text); }
+input, select {
+  min-height: 36px;
+  padding: 6px 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  max-width: 100%;
+}
+button {
+  min-height: 36px;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--sunken);
+  cursor: pointer;
+}
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+button.danger { color: var(--bad); }
+button:disabled { opacity: .55; cursor: default; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+main {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px;
+}
+@media (max-width: 800px) {
+  main { grid-template-columns: minmax(0, 1fr); }
+}
+aside, .detail { display: grid; gap: 16px; align-content: start; min-width: 0; }
+.panel {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-width: 0;
+}
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; }
+.grow { flex: 1 1 140px; }
+.grow select { width: 100%; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+
+.notice { min-height: 20px; font-size: 13px; color: var(--muted); }
+.notice.error { color: var(--bad); }
+
+.incident-list { display: grid; gap: 4px; max-height: 60vh; overflow-y: auto; }
+.incident-item {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 10px;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+}
+.incident-item:hover { background: var(--sunken); }
+.incident-item[aria-current="true"] { background: var(--sunken); border-color: var(--line); }
+.item-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); }
+
+.chip {
+  display: inline-block;
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 18px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.tone-good { color: var(--good); }
+.tone-warn { color: var(--warn); }
+.tone-bad { color: var(--bad); }
+.tone-info { color: var(--info); }
+.tone-muted { color: var(--muted); }
+
+.detail-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+.timeline { display: grid; gap: 2px; max-height: 420px; overflow-y: auto; }
+.tl-entry {
+  display: grid;
+  grid-template-columns: 72px 104px minmax(0, 1fr);
+  gap: 8px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--sunken);
+  font-size: 13px;
+}
+.tl-time { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.tl-body { white-space: pre-wrap; }
+.tl-agent { font-weight: 600; }
+@media (max-width: 520px) {
+  .tl-entry { grid-template-columns: 72px minmax(0, 1fr); }
+  .tl-body { grid-column: 1 / -1; }
+}
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+.stat { display: grid; gap: 0; }
+.stat dt { font-size: 12px; color: var(--muted); }
+.stat dd { margin: 0; font-size: 18px; font-variant-numeric: tabular-nums; }
+
+.evidence { display: grid; gap: 6px; }
+.evidence li { display: grid; gap: 0; padding-left: 10px; border-left: 2px solid var(--line); }
+.steps { display: grid; gap: 2px; padding-left: 20px; list-style: decimal; }
+details > summary { cursor: pointer; }
+details[open] > summary { margin-bottom: 6px; }
+
+.proposal { display: grid; gap: 6px; padding: 10px; background: var(--sunken); border-radius: 6px; }
+.proposal-title { font-weight: 600; }
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="bar">
+  <h1>Incident Copilot</h1>
+  <div class="identity">
+    <label>Reviewer name
+      <input id="decided-by" autocomplete="name" placeholder="you@example.com">
+    </label>
+    <label>API key (kept for this tab only)
+      <input id="api-key" type="password" autocomplete="off">
+    </label>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <section class="panel" aria-labelledby="simulate-title">
+      <h2 id="simulate-title">Simulate alert</h2>
+      <div class="row">
+        <label class="grow">Scenario
+          <select id="scenario">
+            <option value="bad_deploy">Bad deploy</option>
+            <option value="db_pool_exhausted">DB pool exhausted</option>
+            <option value="prompt_injection">Prompt injection in logs</option>
+          </select>
+        </label>
+        <button id="simulate" class="primary" type="button">Fire alert</button>
+      </div>
+      <p id="notice" class="notice" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="incidents-title">
+      <h2 id="incidents-title">Incidents</h2>
+      <ol id="incidents" class="incident-list"></ol>
+      <p id="incidents-empty" class="muted small">None yet. Fire an alert to start.</p>
+    </section>
+  </aside>
+
+  <div class="detail">
+    <section id="placeholder" class="panel">
+      <p class="muted">Select an incident to watch the agents work.</p>
+    </section>
+
+    <div id="incident" class="detail" hidden>
+      <section class="panel">
+        <div class="detail-head">
+          <h3 id="title"></h3>
+          <div id="chips" class="chips"></div>
+        </div>
+        <p id="triage" class="small"></p>
+        <p id="error" class="small tone-bad" hidden></p>
+      </section>
+
+      <section id="proposals-panel" class="panel" aria-labelledby="proposals-title" hidden>
+        <h2 id="proposals-title">Proposed remediation</h2>
+        <div id="proposals" class="evidence"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="timeline-title">
+        <h2 id="timeline-title">Agent timeline</h2>
+        <ol id="timeline" class="timeline" aria-live="off"></ol>
+      </section>
+
+      <section id="report-panel" class="panel" aria-labelledby="report-title" hidden>
+        <h2 id="report-title">Root cause analysis</h2>
+        <div id="report" class="evidence"></div>
+      </section>
+
+      <section class="panel" aria-labelledby="usage-title">
+        <h2 id="usage-title">Cost and tokens</h2>
+        <dl id="usage" class="stats"></dl>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script>
+"use strict";
+
+// Everything shown here can come from a model or from production logs, so it is untrusted.
+// All text reaches the page through textContent. This file must never use innerHTML.
+
+const SCENARIOS = {
+  bad_deploy: {
+    service: "checkout-api",
+    title: "checkout-api 5xx rate above 5% for 5 minutes",
+    description: "HTTP 5xx ratio on checkout-api is 18.4% (threshold 5%).",
+  },
+  db_pool_exhausted: {
+    service: "orders-api",
+    title: "orders-api p99 latency above 5s",
+    description: "p99 latency on orders-api is 30.1s (threshold 5s) and timeouts are rising.",
+  },
+  prompt_injection: {
+    service: "notifications-worker",
+    title: "notifications-worker pods restarting",
+    description: "6 container restarts in 30 minutes with reason OOMKilled.",
+  },
+};
+const TONES = {
+  queued: "muted", investigating: "info", awaiting_approval: "warn", remediating: "info",
+  resolved: "good", closed_no_action: "muted", failed: "bad",
+  pending: "warn", approved: "info", rejected: "muted", executed: "good",
+  low: "good", medium: "warn", high: "bad",
+  SEV1: "bad", SEV2: "bad", SEV3: "warn", SEV4: "muted",
+};
+const STREAM_ENDS = new Set(["resolved", "closed_no_action", "failed", "awaiting_approval"]);
+const LIST_POLL_MS = 3000;
+const RETRY_MS = 2000;
+const MAX_DETAIL_CHARS = 400;
+
+const $ = (id) => document.getElementById(id);
+
+const state = {
+  selectedId: null,
+  status: null,
+  lastEventId: null,
+  stream: null, // AbortController of the open event stream.
+};
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined && text !== null) node.textContent = String(text);
+  return node;
+}
+
+function chip(value) {
+  const label = String(value).replaceAll("_", " ");
+  return el("span", `chip tone-${TONES[value] || "muted"}`, label);
+}
+
+function notify(message, isError = false) {
+  const node = $("notice");
+  node.textContent = message;
+  node.classList.toggle("error", isError);
+}
+
+function stored(key) {
+  try { return sessionStorage.getItem(key) || ""; } catch { return ""; }
+}
+
+function store(key, value) {
+  try { sessionStorage.setItem(key, value); } catch { /* Private mode: keep it in the field. */ }
+}
+
+async function api(path, options = {}) {
+  const response = await fetch(path, options);
+  const body = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(body?.error?.message || `Request failed (${response.status})`);
+  }
+  return { status: response.status, body };
+}
+
+function post(path, payload) {
+  return api(path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-API-Key": $("api-key").value },
+    body: JSON.stringify(payload),
+  });
+}
+
+// Incident list
+
+async function loadIncidents() {
+  try {
+    const { body } = await api("/v1/incidents?limit=50");
+    renderIncidents(body.items);
+    const selected = body.items.find((item) => item.id === state.selectedId);
+    if (selected && selected.status !== state.status) await refreshDetail();
+  } catch {
+    // The next poll retries. A dropped poll isn't worth a message.
+  }
+}
+
+function renderIncidents(items) {
+  $("incidents-empty").hidden = items.length > 0;
+  $("incidents").replaceChildren(...items.map((item) => {
+    const button = el("button", "incident-item");
+    button.type = "button";
+    button.setAttribute("aria-current", String(item.id === state.selectedId));
+    button.addEventListener("click", () => selectIncident(item.id));
+    const meta = el("span", "item-meta");
+    meta.append(chip(item.status));
+    if (item.severity) meta.append(chip(item.severity));
+    meta.append(el("span", null, new Date(item.created_at).toLocaleTimeString()));
+    button.append(el("span", null, item.title), meta);
+    const row = el("li");
+    row.append(button);
+    return row;
+  }));
+}
+
+// Incident detail
+
+async function selectIncident(id) {
+  state.stream?.abort();
+  state.stream = null;
+  state.selectedId = id;
+  state.status = null;
+  state.lastEventId = null;
+  $("timeline").replaceChildren();
+  $("placeholder").hidden = true;
+  $("incident").hidden = false;
+  await refreshDetail();
+  loadIncidents();
+  // On a phone the detail sits below the list, out of sight.
+  if (matchMedia("(max-width: 800px)").matches) $("incident").scrollIntoView();
+}
+
+async function refreshDetail() {
+  const id = state.selectedId;
+  if (!id) return;
+  let body;
+  try {
+    ({ body } = await api(`/v1/incidents/${encodeURIComponent(id)}`));
+  } catch (error) {
+    notify(error.message, true);
+    return;
+  }
+  if (id !== state.selectedId) return;
+  state.status = body.status;
+  renderDetail(body);
+  ensureStream();
+}
+
+function renderDetail(incident) {
+  $("title").textContent = incident.alert.title;
+  const chips = [chip(incident.status)];
+  if (incident.triage) chips.push(chip(incident.triage.severity));
+  chips.push(el("code", "muted", incident.alert.service));
+  $("chips").replaceChildren(...chips);
+  $("triage").textContent = incident.triage?.summary || incident.alert.description || "";
+  $("error").textContent = incident.error || "";
+  $("error").hidden = !incident.error;
+  renderProposals(incident);
+  renderReport(incident);
+  renderUsage(incident.usage);
+}
+
+function evidenceList(items) {
+  const list = el("ul", "evidence");
+  list.append(...items.map((item) => {
+    const row = el("li");
+    row.append(el("code", "tone-info", item.ref), el("span", "small", item.observation));
+    return row;
+  }));
+  return list;
+}
+
+function renderReport(incident) {
+  const report = incident.report;
+  $("report-panel").hidden = !report;
+  if (!report) {
+    $("report").replaceChildren();
+    return;
+  }
+  const blocks = [
+    el("p", null, report.summary),
+    labelled("Root cause", report.root_cause),
+    labelled("Confidence", `${Math.round(report.confidence * 100)}%`),
+  ];
+  if (report.timeline.length) {
+    const steps = el("ol", "steps small");
+    steps.append(...report.timeline.map((step) => el("li", null, step)));
+    blocks.push(section("Timeline", steps));
+  }
+  if (report.evidence.length) blocks.push(section("Evidence", evidenceList(report.evidence)));
+  if (report.runbook_refs.length) {
+    const refs = el("div", "chips");
+    refs.append(...report.runbook_refs.map((ref) => el("code", "tone-info", ref)));
+    blocks.push(section("Runbooks", refs));
+  }
+  for (const [name, finding] of Object.entries(incident.findings)) {
+    const details = el("details", "small");
+    details.append(el("summary", null, `${name} investigator`));
+    details.append(el("p", null, finding.summary));
+    if (finding.suspected_cause) details.append(labelled("Suspected", finding.suspected_cause));
+    details.append(evidenceList(finding.evidence));
+    blocks.push(details);
+  }
+  $("report").replaceChildren(...blocks);
+}
+
+function labelled(label, value) {
+  const line = el("p", "small");
+  line.append(el("span", "muted", `${label}: `), el("span", null, value));
+  return line;
+}
+
+function section(label, content) {
+  const block = el("div");
+  block.append(el("p", "muted small", label), content);
+  return block;
+}
+
+function renderProposals(incident) {
+  const proposals = incident.proposals;
+  $("proposals-panel").hidden = proposals.length === 0;
+  $("proposals").replaceChildren(...proposals.map((proposal) => {
+    const { draft } = proposal;
+    const card = el("div", "proposal");
+    const head = el("div", "detail-head");
+    const target = [draft.action.replaceAll("_", " "), draft.service];
+    if (draft.target_version) target.push(`to ${draft.target_version}`);
+    if (draft.replicas !== null) target.push(`to ${draft.replicas} replicas`);
+    const chips = el("div", "chips");
+    chips.append(chip(proposal.status), chip(draft.risk));
+    head.append(el("span", "proposal-title", target.join(" ")), chips);
+    card.append(head, el("p", "small", draft.rationale));
+    if (proposal.decided_by) {
+      card.append(el("p", "small muted", `Decided by ${proposal.decided_by}`));
+    }
+    if (proposal.result) card.append(el("p", "small", proposal.result));
+    if (proposal.status === "pending" && incident.status === "awaiting_approval") {
+      card.append(decisionButtons(incident.id, proposal.id));
+    }
+    return card;
+  }));
+}
+
+function decisionButtons(incidentId, proposalId) {
+  const row = el("div", "row");
+  const approve = el("button", "primary", "Approve");
+  const reject = el("button", "danger", "Reject");
+  approve.type = reject.type = "button";
+  approve.addEventListener("click", () => decide(incidentId, proposalId, "approve", row));
+  reject.addEventListener("click", () => decide(incidentId, proposalId, "reject", row));
+  row.append(approve, reject);
+  return row;
+}
+
+async function decide(incidentId, proposalId, verb, buttons) {
+  const decidedBy = $("decided-by").value.trim();
+  if (!decidedBy) {
+    notify("Enter a reviewer name first.", true);
+    $("decided-by").focus();
+    return;
+  }
+  for (const button of buttons.children) button.disabled = true;
+  try {
+    const path = `/v1/incidents/${encodeURIComponent(incidentId)}` +
+      `/proposals/${encodeURIComponent(proposalId)}/${verb}`;
+    await post(path, { decided_by: decidedBy });
+    notify(verb === "approve" ? "Approved. Remediation is queued." : "Rejected.");
+  } catch (error) {
+    notify(error.message, true);
+  }
+  await refreshDetail();
+  loadIncidents();
+}
+
+function renderUsage(usage) {
+  const prompt = usage.input_tokens + usage.cache_read_tokens + usage.cache_write_tokens;
+  const hitRate = prompt ? `${Math.round((usage.cache_read_tokens / prompt) * 100)}%` : "n/a";
+  const stats = [
+    ["Cost", `$${usage.cost_usd.toFixed(4)}`],
+    ["Input tokens", usage.input_tokens.toLocaleString()],
+    ["Output tokens", usage.output_tokens.toLocaleString()],
+    ["Cache read", usage.cache_read_tokens.toLocaleString()],
+    ["Cache write", usage.cache_write_tokens.toLocaleString()],
+    ["Cache hit rate", hitRate],
+  ];
+  $("usage").replaceChildren(...stats.map(([label, value]) => {
+    const stat = el("div", "stat");
+    stat.append(el("dt", null, label), el("dd", null, value));
+    return stat;
+  }));
+}
+
+// Event stream. EventSource can't resume with our own cursor control or report HTTP errors,
+// so this reads the same wire format with fetch.
+
+function ensureStream() {
+  if (state.stream || !state.selectedId) return;
+  const atRest = STREAM_ENDS.has(state.status) && state.lastEventId !== null;
+  if (!atRest) followEvents(state.selectedId);
+}
+
+async function followEvents(id) {
+  const controller = new AbortController();
+  state.stream = controller;
+  try {
+    const headers = state.lastEventId ? { "Last-Event-ID": state.lastEventId } : {};
+    const response = await fetch(`/v1/incidents/${encodeURIComponent(id)}/events`, {
+      headers,
+      signal: controller.signal,
+    });
+    if (!response.ok) throw new Error(`stream failed (${response.status})`);
+    await readFrames(response.body, onFrame);
+    finishStream(controller);
+    await refreshDetail();
+  } catch {
+    if (controller.signal.aborted) return;
+    finishStream(controller);
+    setTimeout(() => { if (id === state.selectedId) ensureStream(); }, RETRY_MS);
+  }
+}
+
+function finishStream(controller) {
+  if (state.stream === controller) state.stream = null;
+}
+
+async function readFrames(body, handle) {
+  const reader = body.pipeThrough(new TextDecoderStream()).getReader();
+  let buffer = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) return;
+    buffer += value;
+    let boundary;
+    while ((boundary = buffer.indexOf("\n\n")) >= 0) {
+      handle(parseFrame(buffer.slice(0, boundary)));
+      buffer = buffer.slice(boundary + 2);
+    }
+  }
+}
+
+function parseFrame(text) {
+  const frame = { id: null, event: "message", data: "" };
+  for (const line of text.split("\n")) {
+    if (line.startsWith(":")) continue;
+    const colon = line.indexOf(":");
+    if (colon < 0) continue;
+    const field = line.slice(0, colon);
+    const value = line.slice(colon + 1).replace(/^ /, "");
+    if (field === "id") frame.id = value;
+    else if (field === "event") frame.event = value;
+    else if (field === "data") frame.data += value;
+  }
+  return frame;
+}
+
+function onFrame(frame) {
+  if (!frame.data || frame.event === "end") return;
+  if (frame.id) state.lastEventId = frame.id;
+  const event = JSON.parse(frame.data);
+  appendTimeline(event);
+  if (event.type === "status") refreshDetail();
+}
+
+function truncate(text) {
+  return text.length > MAX_DETAIL_CHARS ? `${text.slice(0, MAX_DETAIL_CHARS)}...` : text;
+}
+
+function describe(event) {
+  const { data } = event;
+  if (event.type === "status") {
+    const name = String(data.status ?? data.stage ?? "").replaceAll("_", " ");
+    const actor = data.decided_by ? ` (${data.decided_by})` : "";
+    return `${name}${data.result ? `: ${data.result}` : ""}${actor}`;
+  }
+  if (event.type === "error") return String(data.error ?? "");
+  if (event.type === "tool_call") return truncate(`${data.tool} ${JSON.stringify(data.input)}`);
+  if (event.type === "agent_finished") {
+    const cost = Number(data.cost_usd ?? 0).toFixed(4);
+    return `${data.status}: ${data.iterations} turns, ${data.tool_calls} tool calls, $${cost}`;
+  }
+  return truncate(JSON.stringify(data));
+}
+
+function appendTimeline(event) {
+  const timeline = $("timeline");
+  const pinned = timeline.scrollHeight - timeline.scrollTop - timeline.clientHeight < 40;
+  const tone = { error: "bad", guardrail: "warn", status: "info" }[event.type] || "muted";
+  const row = el("li", "tl-entry");
+  const who = el("span");
+  who.append(el("span", `chip tone-${tone}`, event.type.replaceAll("_", " ")));
+  const body = el("span", "tl-body");
+  if (event.agent) body.append(el("span", "tl-agent", `${event.agent}: `));
+  body.append(document.createTextNode(describe(event)));
+  row.append(el("span", "tl-time", new Date(event.at).toLocaleTimeString()), who, body);
+  timeline.append(row);
+  if (pinned) timeline.scrollTop = timeline.scrollHeight;
+}
+
+// Controls
+
+async function simulate() {
+  const scenario = $("scenario").value;
+  const button = $("simulate");
+  button.disabled = true;
+  try {
+    // A stable fingerprint, so a second click while active shows deduplication.
+    const { status, body } = await post("/v1/alerts", {
+      fingerprint: `demo-${scenario}`,
+      source: "demo-ui",
+      scenario,
+      ...SCENARIOS[scenario],
+    });
+    notify(status === 200 ? "Deduplicated: joined the active incident." : "Alert accepted.");
+    await selectIncident(body.id);
+  } catch (error) {
+    notify(error.message, true);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function persistField(id, key) {
+  const input = $(id);
+  input.value = stored(key);
+  input.addEventListener("input", () => store(key, input.value));
+}
+
+persistField("api-key", "copilot.apiKey");
+persistField("decided-by", "copilot.decidedBy");
+$("simulate").addEventListener("click", simulate);
+loadIncidents();
+setInterval(loadIncidents, LIST_POLL_MS);
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# Allowlist: nothing enters the build context unless it is named here. This keeps out
+# .env, Terraform state and tfvars, .venv, tests and docs.
+*
+
+!pyproject.toml
+!uv.lock
+!README.md
+!alembic.ini
+!src/
+!migrations/
+
+**/__pycache__/
+**/*.pyc

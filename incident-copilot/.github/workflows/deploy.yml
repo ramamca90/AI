@@ -1,0 +1,65 @@
+# Manual only: run it from the Actions tab on main. There is no push trigger.
+#
+# Uses OIDC, so the repository stores no AWS keys and this file reads no GitHub secrets. Every
+# value below is a non-secret repository variable. `terraform output github_actions_variables`
+# lists them.
+#
+# The first deploy creates the ECS services and must run locally with scripts/deploy.sh.
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to AWS
+    # The IAM role also rejects other branches. This fails earlier, with a clearer message.
+    # Adding a GitHub `environment:` here would change the OIDC subject and break the role trust.
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      BASE_URL: ${{ vars.BASE_URL }}
+      ECR_REPOSITORY_URL: ${{ vars.ECR_REPOSITORY_URL }}
+      ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}
+      API_SERVICE: ${{ vars.API_SERVICE }}
+      WORKER_SERVICE: ${{ vars.WORKER_SERVICE }}
+      API_TASK_FAMILY: ${{ vars.API_TASK_FAMILY }}
+      WORKER_TASK_FAMILY: ${{ vars.WORKER_TASK_FAMILY }}
+      MIGRATE_TASK_FAMILY: ${{ vars.MIGRATE_TASK_FAMILY }}
+      MIGRATE_SUBNETS: ${{ vars.MIGRATE_SUBNETS }}
+      MIGRATE_SECURITY_GROUP: ${{ vars.MIGRATE_SECURITY_GROUP }}
+      IMAGE_TAG: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          role-session-name: deploy-${{ github.run_id }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      # Steps run in order and each stops the job on failure, so a failed migration means
+      # the services are never updated.
+      - name: Build and push the image
+        run: bash scripts/deploy.sh build
+
+      - name: Run the database migration and wait for it
+        run: bash scripts/deploy.sh migrate
+
+      - name: Update both services and wait for stability
+        run: bash scripts/deploy.sh rollout
+
+      - name: Smoke test /readyz
+        run: bash scripts/deploy.sh smoke
