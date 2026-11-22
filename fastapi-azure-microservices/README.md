@@ -21,8 +21,10 @@ with **Bicep** and **GitHub Actions**.
 | **Operability** | 12-factor config with validation, RFC 7807 errors, graceful shutdown, migrations with advisory lock, autoscaling |
 | **Delivery** | Lint + tests + CVE scan on PRs; main → dev → prod (approval) promoting the *same* image |
 
-Read **[docs/architecture.md](docs/architecture.md)** for design decisions and trade-offs,
-and **[docs/interview-walkthrough.md](docs/interview-walkthrough.md)** for a 15-minute demo script.
+See **[docs/diagrams.md](docs/diagrams.md)** for 11 flowcharts of the whole process (request flow, outbox,
+event handling, service internals, CI/CD, Azure permissions), **[docs/architecture.md](docs/architecture.md)**
+for design decisions and trade-offs, and **[docs/interview-walkthrough.md](docs/interview-walkthrough.md)**
+for a 15-minute demo script.
 
 ## Repository layout
 
