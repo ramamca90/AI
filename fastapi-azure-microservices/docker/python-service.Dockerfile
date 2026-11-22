@@ -32,6 +32,12 @@ ENV PYTHONUNBUFFERED=1 \
     SERVICE_VERSION="${GIT_SHA}" \
     PORT=8000
 
+# Apply Debian security fixes released after the base image was built, so a
+# stale upstream tag never ships known, already-patched CVEs.
+RUN apt-get update \
+ && apt-get upgrade -y --no-install-recommends \
+ && rm -rf /var/lib/apt/lists/*
+
 RUN groupadd --system --gid 10001 app \
  && useradd --system --uid 10001 --gid app --home-dir /app --shell /usr/sbin/nologin app
 

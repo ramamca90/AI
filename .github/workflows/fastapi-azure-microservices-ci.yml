@@ -55,6 +55,7 @@ jobs:
     needs: [lint, test]
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false # one bad image must not hide the others' results
       matrix:
         include:
           - { name: identity-service, module: identity_service }
@@ -70,7 +71,9 @@ jobs:
             --build-arg GIT_SHA=${{ github.sha }} \
             -t ${{ matrix.name }}:ci .
       - name: Scan image for HIGH/CRITICAL CVEs
-        uses: aquasecurity/trivy-action@0.28.0
+        # Pinned to a commit SHA, not a tag: tags can be moved or deleted
+        # (as happened to this action in March 2026). Bump via Dependabot/Renovate.
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: ${{ matrix.name }}:ci
           severity: HIGH,CRITICAL
