@@ -1,0 +1,104 @@
+# Reusable deployment workflow: one environment per call.
+# Auth is GitHub OIDC -> Entra ID federated credential (no stored Azure secrets).
+name: fastapi-azure-microservices deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+      parameters_file:
+        type: string
+        required: true
+      promote_from_registry:
+        description: "If set, import already-tested images from this ACR instead of rebuilding"
+        type: string
+        default: ""
+    outputs:
+      registry:
+        value: ${{ jobs.deploy.outputs.registry }}
+
+permissions:
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    working-directory: fastapi-azure-microservices
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    outputs:
+      registry: ${{ steps.infra.outputs.registry }}
+    env:
+      RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      IMAGE_TAG: ${{ github.sha }}
+      POSTGRES_ADMIN_PASSWORD: ${{ secrets.POSTGRES_ADMIN_PASSWORD }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Provision / update platform (no apps yet)
+        id: infra
+        env:
+          DEPLOY_APPS: "false"
+        run: |
+          az deployment group create -g "$RESOURCE_GROUP" \
+            -n "platform-${GITHUB_RUN_ID}" \
+            -f infra/main.bicep -p ${{ inputs.parameters_file }} -o none
+          ACR=$(az deployment group show -g "$RESOURCE_GROUP" -n "platform-${GITHUB_RUN_ID}" \
+            --query properties.outputs.registryName.value -o tsv)
+          echo "registry=$ACR" >> "$GITHUB_OUTPUT"
+
+      - name: Build images in ACR (no Docker daemon needed)
+        if: inputs.promote_from_registry == ''
+        run: |
+          ACR=${{ steps.infra.outputs.registry }}
+          for svc in identity-service:identity_service orders-service:orders_service notification-service:notification_service; do
+            name=${svc%%:*}; module=${svc##*:}
+            az acr build -r "$ACR" -t "$name:$IMAGE_TAG" \
+              -f docker/python-service.Dockerfile \
+              --build-arg SERVICE="$name" --build-arg SERVICE_MODULE="$module" \
+              --build-arg GIT_SHA="$IMAGE_TAG" . &
+          done
+          az acr build -r "$ACR" -t "gateway:$IMAGE_TAG" gateway &
+          wait
+
+      - name: Promote tested images (build once, deploy many)
+        if: inputs.promote_from_registry != ''
+        run: |
+          ACR=${{ steps.infra.outputs.registry }}
+          for name in identity-service orders-service notification-service gateway; do
+            az acr import -n "$ACR" --force \
+              --source "${{ inputs.promote_from_registry }}.azurecr.io/$name:$IMAGE_TAG" \
+              --image "$name:$IMAGE_TAG"
+          done
+
+      - name: Deploy container apps
+        env:
+          DEPLOY_APPS: "true"
+        run: |
+          az deployment group create -g "$RESOURCE_GROUP" \
+            -n "apps-${GITHUB_RUN_ID}" \
+            -f infra/main.bicep -p ${{ inputs.parameters_file }} -o none
+          URL=$(az deployment group show -g "$RESOURCE_GROUP" -n "apps-${GITHUB_RUN_ID}" \
+            --query properties.outputs.gatewayUrl.value -o tsv)
+          echo "GATEWAY_URL=$URL" >> "$GITHUB_ENV"
+          echo "### ${{ inputs.environment }}: $URL" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Smoke test
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsS "$GATEWAY_URL/healthz"; then exit 0; fi
+            sleep 10
+          done
+          echo "gateway never became healthy" && exit 1

@@ -1,0 +1,33 @@
+# dev (automatic once triggered) -> prod (manual approval via GitHub environment rules).
+# Manual trigger only: this repo hosts several projects, and the Azure
+# environments must be configured first (see fastapi-azure-microservices/README.md).
+# To deploy on every merge instead, add:  push: { branches: [main], paths: ["fastapi-azure-microservices/**"] }
+name: fastapi-azure-microservices CD
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: fastapi-azure-microservices-cd
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  dev:
+    uses: ./.github/workflows/fastapi-azure-microservices-deploy.yml
+    with:
+      environment: dev
+      parameters_file: infra/parameters/dev.bicepparam
+    secrets: inherit
+
+  prod:
+    needs: dev
+    uses: ./.github/workflows/fastapi-azure-microservices-deploy.yml
+    with:
+      environment: prod
+      parameters_file: infra/parameters/prod.bicepparam
+      promote_from_registry: ${{ needs.dev.outputs.registry }}
+    secrets: inherit
