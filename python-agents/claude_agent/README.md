@@ -22,7 +22,7 @@ main.py ──► agent_client.ClaudeAgent.ask("...") ──► Anthropic (agent
 ## Setup (Windows PowerShell)
 
 ```powershell
-cd python-agentsaude_agent
+cd python-agents/claude_agent
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
