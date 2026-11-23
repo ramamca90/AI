@@ -69,3 +69,13 @@ for activity in agent.ask_raw("Show me options"):   # full JSON (adaptive cards,
   (timeout 60 s, `reply_timeout=` to change).
 - Agents that use **user authentication (Entra ID sign-in)** need a sign-in card flow and
   aren't handled by this sample.
+
+## Sample output
+
+A real run against the published Copilot Studio agent is in
+[`sample_run_output.txt`](sample_run_output.txt):
+
+```
+You: What are your opening hours?
+Agent: We're open **9am–6pm, Monday to Saturday**, and closed on Sundays. ...
+```

@@ -1,0 +1,7 @@
+﻿[conversation G4fUejtugsBIwix94SEle8-in started]
+
+You: Hi! What can you help me with?
+Agent: Hi there! I can help with questions about our online electronics store, including orders, delivery, returns, refunds and store hours. For example, I can tell you that delivery takes 3–5 working days, and that we're open 9am–6pm Monday to Saturday (closed Sunday). If you'd like me to check an order, just send me your order ID.
+
+You: What are your opening hours?
+Agent: We're open **9am–6pm, Monday to Saturday**, and closed on Sundays. Today is Monday, so we're open until 6pm. Is there anything else I can help you with?
